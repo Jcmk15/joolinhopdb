@@ -3,50 +3,48 @@
 
 <head>
     <script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-analytics.js";
+        import { firestore } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
 
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyBHVINPvMK46HMtWCtOaYueV4G5tp-Nozw",
-    authDomain: "joolinhopdb-3f084.firebaseapp.com",
-    projectId: "joolinhopdb-3f084",
-    storageBucket: "joolinhopdb-3f084.appspot.com",
-    messagingSenderId: "265596028160",
-    appId: "1:265596028160:web:94cfc56db8c6bc75161fe5",
-    measurementId: "G-700ZJGTJ82"
-  };
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyBHVINPvMK46HMtWCtOaYueV4G5tp-Nozw",
+            authDomain: "joolinhopdb-3f084.firebaseapp.com",
+            projectId: "joolinhopdb-3f084",
+            storageBucket: "joolinhopdb-3f084.appspot.com",
+            messagingSenderId: "265596028160",
+            appId: "1:265596028160:web:94cfc56db8c6bc75161fe5",
+            measurementId: "G-700ZJGTJ82"
+        };
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = firestore(app);
 
+        // Exemplo de como salvar dados
+        db.collection("suaColecao").add({
+            titulo: "Exemplo de Título",
+            texto: "Este é um exemplo de texto."
+        })
+            .then((docRef) => {
+                console.log("Documento salvo com ID: ", docRef.id);
+            })
+            .catch((error) => {
+                console.error("Erro ao adicionar documento: ", error);
+            });
 
+        // Exemplo de como recuperar dados
+        db.collection("suaColecao").get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                console.log(`${doc.id} => ${doc.data().titulo}`);
+            });
+        });
 
-    // Exemplo de como salvar dados
-    db.collection("suaColecao").add({
-      titulo: "Exemplo de Título",
-      texto: "Este é um exemplo de texto."
-    })
-      .then((docRef) => {
-        console.log("Documento salvo com ID: ", docRef.id);
-      })
-      .catch((error) => {
-        console.error("Erro ao adicionar documento: ", error);
-      });
-
-    // Exemplo de como recuperar dados
-    db.collection("suaColecao").get().then((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        console.log(`${doc.id} => ${doc.data().titulo}`);
-      });
-    });
-    
-</script>
+    </script>
 
     <!-- Metatags para codificação de caracteres e design responsivo -->
     <meta charset="UTF-8">
@@ -128,7 +126,7 @@
                 // Cria um novo elemento de resultado e anexa ao container de resultados de busca
                 var novoResultado = criarResultadoBusca(novoTitulo, novaFrase);
                 document.getElementById("resultados-busca").appendChild(novoResultado);
-                
+
                 // Salva os dados atualizados no armazenamento local
                 salvarDadosNoLocalStorage();
                 // Limpa os campos de entrada
@@ -240,16 +238,16 @@
             }
         }
     </script>
-    <script>// ... (seu código existente)
+    <script>
+        // (Seu código existente)
 
-        document.getElementById("search-bar").addEventListener("keyup", function(event) {
-            // Verifica se a tecla pressionada é "Enter" (código 13)
+        document.getElementById("search-bar").addEventListener("keyup", function (event) {
             if (event.key === "Enter") {
                 pesquisar();
             }
         });
-        
-        </script>
+
+    </script>
 </body>
 
 </html>
