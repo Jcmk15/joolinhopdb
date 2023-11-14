@@ -187,3 +187,14 @@ body {
         transform: scale(1);
     }
 }
+
+
+footer {
+    text-align: center;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #ddd;
+    color: #333;
+    border-top: 1px solid #999;
+}
+
