@@ -1,5 +1,3 @@
-/* style.css */
-
 body, h1, h2, p, button {
     margin: 0;
     padding: 0;
@@ -11,7 +9,7 @@ body {
     background-color: #ffff;
 }
 
-#search-container {
+#container-busca {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -21,13 +19,13 @@ body {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
 
-#google-logo {
+#logo-google {
     width: 100%;
     max-width: 450px; 
     margin-bottom: 50px;
 }
 
-#search-bar {
+#barra-busca {
     width: 46%;
     padding: 07px;
     font-size: 20px;
@@ -39,7 +37,7 @@ body {
     margin-right: 10px; 
 }
 
-#search-container button {
+#container-busca button {
     background-color: #161816;
     color: #fff;
     height: 46px;
@@ -47,6 +45,7 @@ body {
     font-size: 18px;
     border-radius: 27px;
     text-align: center;
+    animation: pulse 1.5s infinite;
 }
 
 .resultado-busca {
@@ -55,18 +54,30 @@ body {
     margin-bottom: 20px;
     border-radius: 20px;
     background-color: #fff;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.5s forwards;
 }
 
 .resultado-busca button {
     margin-right: 5px;
-    padding: 8px;
+    padding: 10px;
     cursor: pointer;
+    background-color: #45a049;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
 }
 
-.btn-container {
+.resultado-busca button:hover {
+    background-color: #4CAF50;
+}
+
+.container-botao {
     display: flex;
     flex-direction: column;
-    align-items: flex-end; /* Alinhado à direita */
+    align-items: flex-end;
     padding: 15px;
     background-color: #fff;
     border-radius: 10px;
@@ -74,9 +85,12 @@ body {
     position: fixed;
     bottom: 20px;
     right: 20px;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.5s forwards;
 }
 
-.btn-input, .btn-textarea {
+.entrada-botao, .entrada-textarea {
     width: 90%;
     padding: 4px;
     font-size: 16px;
@@ -88,7 +102,7 @@ body {
     margin-right: 10px;
 }
 
-.btn-textarea {
+.entrada-textarea {
     width: 81%;
     max-width: 394px;
     margin-top: 11px;
@@ -98,7 +112,7 @@ body {
     text-align: center;
 }
 
-.btn-add {
+.botao-adicionar {
     background-color: #4CAF50;
     color: white;
     padding: 10px 20px;
@@ -108,13 +122,18 @@ body {
     height: 44px;
     font-size: 13px;
     text-align: center;
+    transition: background-color 0.3s ease;
 }
 
-.btn-add:hover {
+.botao-adicionar:hover {
     background-color: #45a049;
 }
 
-#add-button {
+#botao-busca:hover {
+    background-color: #45a049;
+}
+
+#botao-adicao {
     background-color: #4CAF50;
     color: white;
     padding: 10px 20px;
@@ -129,23 +148,42 @@ body {
     right: 20px;
 }
 
-#add-button:hover {
+#botao-adicao:hover {
     background-color: #45a049;
 }
 
 @media screen and (max-width: 600px) {
-    #search-container {
+    #container-busca {
         max-width: 100%;
     }
-    #search-bar, #search-container button {
+    #barra-busca, #container-busca button {
         width: 100%;
     }
 
-    .btn-container {
+    .container-botao {
         width: 100%;
     }
 
-    .btn-input, .btn-textarea {
+    .entrada-botao, .entrada-textarea {
         width: 100%;
+    }
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
     }
 }
