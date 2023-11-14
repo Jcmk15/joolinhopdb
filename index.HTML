@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <!-- Metatags para codificação de caracteres e design responsivo -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Página de Busca</title>
+    <!-- Link para a folha de estilo externa -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body onload="carregarDadosSalvos()">
+
+    <!-- Container de busca com campo de input, botão e logo -->
+    <div id="search-container">
+        <img id="google-logo" src="C:\Users\Julim\Desktop\Projeto1\img\google.png" alt="Logo do Google">
+        <input type="text" id="search-bar" placeholder="O que você está procurando?" oninput="ocultarAreas()">
+        <button id="search-button" onclick="pesquisar()">Buscar</button>
+    </div>
+
+    <!-- Container para exibir resultados da busca -->
+    <div id="resultados-busca"></div>
+
+    <!-- Container para adicionar novos títulos de busca e respostas -->
+    <div id="btn" class="btn-container">
+        <input type="text" id="novo-titulo" class="btn-input" placeholder="palavra-chave para busca...">
+        <div id="frase-container" class="btn-textarea">
+            <textarea id="nova-frase" placeholder="Detalhamento de Conteúdo..." style="width: 250px; height: 100px;"></textarea>
+        </div>
+        <button id="add-button" class="btn-add" onclick="adicionarNovoTitulo()">Adicionar</button>
+    </div>
+
+    <script>
+        // Função para criar um novo elemento de resultado de busca
+        function criarResultadoBusca(titulo, frase) {
+            // Cria um novo elemento div com a classe "resultado-busca"
+            var novoResultado = document.createElement("div");
+            novoResultado.className = "resultado-busca";
+
+            // Cria elementos h2 e p para título e frase
+            var tituloElemento = document.createElement("h2");
+            tituloElemento.textContent = titulo;
+
+            var fraseElemento = document.createElement("p");
+            fraseElemento.textContent = frase;
+
+            // Cria botões para editar e excluir o resultado
+            var editarBotao = criarBotao("Editar", function () {
+                editarTexto(novoResultado);
+            });
+
+            var excluirBotao = criarBotao("Excluir", function () {
+                excluirTexto(novoResultado);
+            });
+
+            // Anexa elementos ao novo resultado div
+            novoResultado.appendChild(tituloElemento);
+            novoResultado.appendChild(fraseElemento);
+            novoResultado.appendChild(editarBotao);
+            novoResultado.appendChild(excluirBotao);
+            novoResultado.style.display = "none";
+
+            return novoResultado;
+        }
+
+        // Função para criar um elemento de botão
+        function criarBotao(texto, clickHandler) {
+            var botao = document.createElement("button");
+            botao.textContent = texto;
+            botao.onclick = clickHandler;
+            return botao;
+        }
+
+        // Função para adicionar um novo título de busca e resposta
+        function adicionarNovoTitulo() {
+            var novoTitulo = document.getElementById("novo-titulo").value;
+            var novaFrase = document.getElementById("nova-frase").value;
+
+            // Verifica se ambos título e resposta são fornecidos
+            if (novoTitulo && novaFrase) {
+                // Cria um novo elemento de resultado e anexa ao container de resultados de busca
+                var novoResultado = criarResultadoBusca(novoTitulo, novaFrase);
+                document.getElementById("resultados-busca").appendChild(novoResultado);
+                
+                // Salva os dados atualizados no armazenamento local
+                salvarDadosNoLocalStorage();
+                // Limpa os campos de entrada
+                document.getElementById("novo-titulo").value = "";
+                document.getElementById("nova-frase").value = "";
+            }
+        }
+
+        // Função para pesquisar resultados com base na entrada
+        function pesquisar() {
+            var termo = document.getElementById("search-bar").value.toLowerCase();
+            var resultados = document.getElementsByClassName("resultado-busca");
+
+            for (var i = 0; i < resultados.length; i++) {
+                var titulo = resultados[i].getElementsByTagName("h2")[0].textContent.toLowerCase();
+                var frase = resultados[i].getElementsByTagName("p")[0].textContent.toLowerCase();
+
+                if (termo === "") {
+                    resultados[i].style.display = "none";
+                } else if (titulo.includes(termo) || frase.includes(termo)) {
+                    resultados[i].style.display = "block";
+                } else {
+                    resultados[i].style.display = "none";
+                }
+            }
+        }
+
+        // Função para editar o título e resposta de um resultado
+        function editarTexto(resultado) {
+            var novoTitulo = prompt("Novo título:");
+            var novaFrase = prompt("Nova frase:");
+
+            if (novoTitulo !== null && novaFrase !== null) {
+                // Atualiza o título e resposta do resultado
+                resultado.getElementsByTagName("h2")[0].textContent = novoTitulo;
+                resultado.getElementsByTagName("p")[0].textContent = novaFrase;
+                // Salva os dados atualizados no armazenamento local
+                salvarDadosNoLocalStorage();
+            }
+        }
+
+        // Função para excluir um resultado
+        function excluirTexto(resultado) {
+            if (confirm("Tem certeza que deseja excluir este resultado?")) {
+                // Remove o resultado do DOM
+                resultado.remove();
+                // Salva os dados atualizados no armazenamento local
+                salvarDadosNoLocalStorage();
+            }
+        }
+
+        // Função para salvar dados de resultados de busca no armazenamento local
+        function salvarDadosNoLocalStorage() {
+            var resultados = document.getElementsByClassName("resultado-busca");
+            var dados = [];
+
+            for (var i = 0; i < resultados.length; i++) {
+                var titulo = resultados[i].getElementsByTagName("h2")[0].textContent;
+                var frase = resultados[i].getElementsByTagName("p")[0].textContent;
+
+                dados.push({
+                    titulo: titulo,
+                    frase: frase
+                });
+            }
+
+            // Converte os dados para JSON e salva no armazenamento local
+            localStorage.setItem("dadosBusca", JSON.stringify(dados));
+        }
+
+        // Função para carregar dados salvos de resultados de busca do armazenamento local
+        function carregarDadosSalvos() {
+            var dadosSalvos = localStorage.getItem("dadosBusca");
+
+            if (dadosSalvos) {
+                // Analisa os dados JSON e cria elementos de resultado para cada entrada
+                dadosSalvos = JSON.parse(dadosSalvos);
+
+                for (var i = 0; i < dadosSalvos.length; i++) {
+                    var novoResultado = criarResultadoBusca(dadosSalvos[i].titulo, dadosSalvos[i].frase);
+                    document.getElementById("resultados-busca").appendChild(novoResultado);
+                }
+            }
+        }
+
+        // Função para ocultar áreas com base na entrada de busca
+        function ocultarAreas() {
+            var termo = document.getElementById("search-bar").value.toLowerCase();
+            var resultados = document.getElementsByClassName("resultado-busca");
+
+            for (var i = 0; i < resultados.length; i++) {
+                var titulo = resultados[i].getElementsByTagName("h2")[0].textContent.toLowerCase();
+                var frase = resultados[i].getElementsByTagName("p")[0].textContent.toLowerCase();
+
+                //...
+                // (continuação do código)
+                //...
+            }
+
+            var novoTitulo = document.getElementById("novo-titulo");
+            var novaFrase = document.getElementById("nova-frase");
+
+            if (termo !== "") {
+                novoTitulo.classList.add("hidden");
+                novaFrase.classList.add("hidden");
+            } else {
+                novoTitulo.classList.remove("hidden");
+                novaFrase.classList.remove("hidden");
+            }
+        }
+    </script>
+    <script>// ... (seu código existente)
+
+        document.getElementById("search-bar").addEventListener("keyup", function(event) {
+            // Verifica se a tecla pressionada é "Enter" (código 13)
+            if (event.key === "Enter") {
+                pesquisar();
+            }
+        });
+        
+        </script>
+</body>
+
+</html>
