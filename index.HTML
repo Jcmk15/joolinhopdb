@@ -2,11 +2,11 @@
 <html lang="pt-br">
 
 <head>
-    <script type="module">
+       <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-analytics.js";
-       
+        import { firestore } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
 
         // Your web app's Firebase configuration
         // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -23,26 +23,139 @@
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
+        const db = firestore(app);
 
+        // Função para criar um novo elemento de resultado de busca
+        function criarResultadoBusca(titulo, frase) {
+            // Cria um novo elemento div com a classe "resultado-busca"
+            var novoResultado = document.createElement("div");
+            novoResultado.className = "resultado-busca";
 
-        // Exemplo de como salvar dados
-        db.collection("suaColecao").add({
-            titulo: "Exemplo de Título",
-            texto: "Este é um exemplo de texto."
-        })
-            .then((docRef) => {
-                console.log("Documento salvo com ID: ", docRef.id);
+            // Cria elementos h2 e p para título e frase
+            var tituloElemento = document.createElement("h2");
+            tituloElemento.textContent = titulo;
+
+            var fraseElemento = document.createElement("p");
+            fraseElemento.textContent = frase;
+
+            // Cria botões para editar e excluir o resultado
+            var editarBotao = criarBotao("Editar", function () {
+                editarTexto(novoResultado);
+            });
+
+            var excluirBotao = criarBotao("Excluir", function () {
+                excluirTexto(novoResultado);
+            });
+
+            // Anexa elementos ao novo resultado div
+            novoResultado.appendChild(tituloElemento);
+            novoResultado.appendChild(fraseElemento);
+            novoResultado.appendChild(editarBotao);
+            novoResultado.appendChild(excluirBotao);
+            novoResultado.style.display = "none";
+
+            return novoResultado;
+        }
+
+        // Função para criar um elemento de botão
+        function criarBotao(texto, clickHandler) {
+            var botao = document.createElement("button");
+            botao.textContent = texto;
+            botao.onclick = clickHandler;
+            return botao;
+        }
+
+        // Função para adicionar um novo título de busca e resposta
+        function adicionarNovoTitulo() {
+            var novoTitulo = document.getElementById("novo-titulo").value;
+            var novaFrase = document.getElementById("nova-frase").value;
+
+            // Verifica se ambos título e resposta são fornecidos
+            if (novoTitulo && novaFrase) {
+                // Cria um novo elemento de resultado e anexa ao container de resultados de busca
+                var novoResultado = criarResultadoBusca(novoTitulo, novaFrase);
+                document.getElementById("resultados-busca").appendChild(novoResultado);
+
+                // Salva os dados no Firestore
+                salvarDadosNoFirestore(novoTitulo, novaFrase);
+
+                // Limpa os campos de entrada
+                document.getElementById("novo-titulo").value = "";
+                document.getElementById("nova-frase").value = "";
+            }
+        }
+
+        // Função para salvar dados no Firestore
+        function salvarDadosNoFirestore(titulo, frase) {
+            db.collection("suaColecao").add({
+                titulo: titulo,
+                texto: frase
             })
-            .catch((error) => {
-                console.error("Erro ao adicionar documento: ", error);
-            });
+                .then((docRef) => {
+                    console.log("Documento salvo com ID: ", docRef.id);
+                })
+                .catch((error) => {
+                    console.error("Erro ao adicionar documento: ", error);
+                });
+        }
 
-        // Exemplo de como recuperar dados
-        db.collection("suaColecao").get().then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                console.log(`${doc.id} => ${doc.data().titulo}`);
-            });
-        });
+        // Função para pesquisar resultados com base na entrada
+        function pesquisar() {
+            var termo = document.getElementById("search-bar").value.toLowerCase();
+            var resultados = document.getElementsByClassName("resultado-busca");
+
+            for (var i = 0; i < resultados.length; i++) {
+                var titulo = resultados[i].getElementsByTagName("h2")[0].textContent.toLowerCase();
+                var frase = resultados[i].getElementsByTagName("p")[0].textContent.toLowerCase();
+
+                if (termo === "") {
+                    resultados[i].style.display = "none";
+                } else if (titulo.includes(termo) || frase.includes(termo)) {
+                    resultados[i].style.display = "block";
+                } else {
+                    resultados[i].style.display = "none";
+                }
+            }
+        }
+
+        // Função para editar o título e resposta de um resultado
+        function editarTexto(resultado) {
+            var novoTitulo = prompt("Novo título:");
+            var novaFrase = prompt("Nova frase:");
+
+            if (novoTitulo !== null && novaFrase !== null) {
+                // Atualiza o título e resposta do resultado
+                resultado.getElementsByTagName("h2")[0].textContent = novoTitulo;
+                resultado.getElementsByTagName("p")[0].textContent = novaFrase;
+                // Salva os dados atualizados no Firestore
+                salvarDadosNoFirestore(novoTitulo, novaFrase);
+            }
+        }
+
+        // Função para excluir um resultado
+        function excluirTexto(resultado) {
+            if (confirm("Tem certeza que deseja excluir este resultado?")) {
+                // Remove o resultado do DOM
+                resultado.remove();
+                // Obtém o ID do documento a ser excluído
+                var docId = resultado.getAttribute("data-doc-id");
+                // Exclui o documento correspondente no Firestore
+                excluirDocumentoNoFirestore(docId);
+            }
+        }
+
+        // Função para excluir um documento no Firestore
+        function excluirDocumentoNoFirestore(docId) {
+            db.collection("suaColecao").doc(docId).delete()
+                .then(() => {
+                    console.log("Documento excluído com sucesso");
+                })
+                .catch((error) => {
+                    console.error("Erro ao excluir documento: ", error);
+                });
+        }
+
+        // ... (restante do seu código)
 
     </script>
 
