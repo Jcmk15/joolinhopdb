@@ -8,7 +8,7 @@ body {
     font-family: Arial, sans-serif;
     background-color: #ffff;
 }
-    
+
 #container-busca {
     display: flex;
     flex-direction: column;
@@ -27,7 +27,7 @@ body {
 
 #barra-busca {
     width: 46%;
-    padding: 07px;
+    padding: 7px;
     font-size: 20px;
     border: 4px solid #ccc;
     border-radius: 25px;
@@ -46,6 +46,24 @@ body {
     border-radius: 27px;
     text-align: center;
     animation: pulse 1.5s infinite;
+}
+
+#input-imagem-label {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    cursor: pointer;
+    border: none;
+    border-radius: 15px;
+    height: 44px;
+    font-size: 13px;
+    text-align: center;
+    transition: background-color 0.3s ease;
+    display: inline-block;
+}
+
+#input-imagem-label:hover {
+    background-color: #45a049;
 }
 
 .resultado-busca {
@@ -72,6 +90,13 @@ body {
 
 .resultado-busca button:hover {
     background-color: #4CAF50;
+}
+
+.resultado-busca img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin-top: 10px;
 }
 
 .container-botao {
@@ -107,26 +132,33 @@ body {
     max-width: 394px;
     margin-top: 11px;
     padding: 19px;
-    font-size: 4px;
+    font-size: 14px;
     border-radius: 17px;
     text-align: center;
 }
 
 .botao-adicionar {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 20px;
-    cursor: pointer;
-    border: none;
-    border-radius: 15px;
-    height: 44px;
-    font-size: 13px;
-    text-align: center;
-    transition: background-color 0.3s ease;
+    .botao-adicionar {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        cursor: pointer;
+        border: none;
+        border-radius: 15px;
+        height: 44px;
+        font-size: 16px; /* Ajustado o tamanho da fonte */
+        text-align: center;
+        transition: background-color 0.3s ease;
+    }
+    
+    .botao-adicionar:hover {
+        background-color: #45a049;
+    }
+    
 }
 
 .botao-adicionar:hover {
-    background-color: #45a049;
+    background-color: #4CAF50;
 }
 
 #botao-busca:hover {
@@ -136,17 +168,18 @@ body {
 #botao-adicao {
     background-color: #4CAF50;
     color: white;
-    padding: 10px 20px;
+    padding: 14px 20px;
     cursor: pointer;
     border: none;
-    border-radius: 15px;
+    border-radius: 65px;
     position: fixed;
-    height: 44px;
+    height: 38px;
     font-size: 13px;
     text-align: center;
-    bottom: 20px;
-    right: 20px;
+    bottom: 38px;
+    right: 120px;
 }
+
 
 #botao-adicao:hover {
     background-color: #45a049;
@@ -188,7 +221,6 @@ body {
     }
 }
 
-
 footer {
     text-align: center;
     margin-top: 20px;
@@ -197,4 +229,3 @@ footer {
     color: #333;
     border-top: 1px solid #999;
 }
-
